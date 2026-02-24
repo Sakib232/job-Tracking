@@ -83,3 +83,63 @@ function createJobCard(data) {
 
     return div;
 }
+
+// render functions
+
+function renderInterviewList() {
+    filterSection.innerHTML = '';
+    if (interviewList.length === 0) {
+        filterSection.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12">
+                <img src="jobs.png" alt="No jobs" class="w-16 h-16">
+                <h3 class="mt-4 font-semibold text-lg">No jobs available</h3>
+                <p class="text-sm text-gray-500">Check back soon for new opportunities</p>
+            </div>`;
+        return;
+    }
+    interviewList.forEach(item => {
+        filterSection.appendChild(createJobCard(item));
+    });
+}
+
+function renderRejectedList() {
+    filterSection.innerHTML = '';
+    if (rejectedList.length === 0) {
+        filterSection.innerHTML = `
+            <div class="flex flex-col items-center justify-center py-12">
+                <img src="jobs.png" alt="No jobs" class="w-16 h-16">
+                <h3 class="mt-4 font-semibold text-lg">No jobs available</h3>
+                <p class="text-sm text-gray-500">Check back soon for new opportunities</p>
+            </div>`;
+        return;
+    }
+    rejectedList.forEach(item => {
+        filterSection.appendChild(createJobCard(item));
+    });
+}
+
+function toggleView(id) {
+    applyFilterStyles(id);
+
+    if (id === 'all-filter-btn') {
+        currentFilter = 'all';
+        jobCardsSection.classList.remove('hidden');
+        filterSection.classList.add('hidden');
+    }
+
+    if (id === 'interview-filter-btn') {
+        currentFilter = 'interview';
+        jobCardsSection.classList.add('hidden');
+        filterSection.classList.remove('hidden');
+        renderInterviewList();
+    }
+
+    if (id === 'rejected-filter-btn') {
+        currentFilter = 'rejected';
+        jobCardsSection.classList.add('hidden');
+        filterSection.classList.remove('hidden');
+        renderRejectedList();
+    }
+
+    calculateCounts();
+}
