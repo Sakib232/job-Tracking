@@ -143,3 +143,101 @@ function toggleView(id) {
 
     calculateCounts();
 }
+
+
+ 
+
+allFilterBtn.addEventListener('click', () => toggleView('all-filter-btn'));
+interviewFilterBtn.addEventListener('click', () => toggleView('interview-filter-btn'));
+rejectedFilterBtn.addEventListener('click', () => toggleView('rejected-filter-btn'));
+
+mainContainer.addEventListener('click', function(event) {
+
+    const btn = event.target.closest('button');
+    if (!btn) return;
+
+    const card = btn.closest('.card');
+    if (!card) return;
+
+    const jobNameEl = card.querySelector('.cardName');
+    const jobTitleEl = card.querySelector('.jobs-tittle');
+    const text1El = card.querySelector('.text1');
+    const notesEl = card.querySelector('.notes');
+
+    const jobName = jobNameEl ? jobNameEl.innerText : '';
+    const jobTitle = jobTitleEl ? jobTitleEl.innerText : '';
+    const text1 = text1El ? text1El.innerText : '';
+    const notes = notesEl ? notesEl.innerText : '';
+
+    
+    if (btn.classList.contains('interview-btn')) {
+
+        card.querySelector('.status').innerText = 'Interview';
+
+        
+        rejectedList = rejectedList.filter(x => x.jobName !== jobName);
+
+        
+        if (!interviewList.some(x => x.jobName === jobName)) {
+            interviewList.push({ jobName, jobTitle, text1, status: 'Interview', notes });
+        }
+
+        if (currentFilter === 'interview') {
+            renderInterviewList();
+        }
+
+        calculateCounts();
+    }
+
+    
+    if (btn.classList.contains('rejected-btn')) {
+
+        card.querySelector('.status').innerText = 'Rejected';
+
+        
+        interviewList = interviewList.filter(x => x.jobName !== jobName);
+
+        
+        if (!rejectedList.some(x => x.jobName === jobName)) {
+            rejectedList.push({ jobName, jobTitle, text1, status: 'Rejected', notes });
+        }
+
+        if (currentFilter === 'rejected') {
+            renderRejectedList();
+        }
+
+        calculateCounts();
+    }
+
+   
+    if (btn.classList.contains('delete-btn')) {
+
+        interviewList = interviewList.filter(x => x.jobName !== jobName);
+        rejectedList = rejectedList.filter(x => x.jobName !== jobName);
+
+        card.remove();
+
+        if (currentFilter === 'interview') renderInterviewList();
+        if (currentFilter === 'rejected') renderRejectedList();
+
+        calculateCounts();
+    }
+});
+
+
+calculateCounts();
+
+
+function checkEmptyState() {
+    const emptyStateEl = document.getElementById('emptyState');
+   
+    const cardCount = jobCardsSection.querySelectorAll('.card').length;
+    if (cardCount === 0) {
+        emptyStateEl.classList.remove('hidden');
+    } else {
+        emptyStateEl.classList.add('hidden');
+    }
+}
+
+
+checkEmptyState();
